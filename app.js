@@ -10,10 +10,6 @@ const multer = require('multer');
 
 require('dotenv').config();
 
-const feedRoutes = require('./routes/feed.js');
-
-const authRoutes = require('./routes/auth.js');
-
 const port = process.env.PORT || 8080;
 
 const app = express();
@@ -50,10 +46,6 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
-
-app.use('/feed', feedRoutes);
-
-app.use('/auth', authRoutes);
  
 //central error handling middleware
 app.use((error, req, res, next) => {  
@@ -74,12 +66,8 @@ mongoose.connect(process.env.MONGODB_URI, {
     })
     .then(result => {
         console.log('connection successful');
-       const server = app.listen(port, () => {
+        app.listen(port, () => {
             console.log(`Listening on port ${port}`);
-        });
-        const io = require('./socket.js').init(server);
-        io.on('connection',socket => {
-            console.log('Client connected');
         });
     })
     .catch(err => console.log(err));
