@@ -14,6 +14,8 @@ const graphqlSchema = require('./graphql/schema.js');
 
 const graphqlResolver = require('./graphql/resolvers.js');
 
+const auth = require('./middleware/auth.js');
+
 require('dotenv').config();
 
 const port = process.env.PORT || 8080;
@@ -56,11 +58,13 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use (auth);
+
 app.use('/graphql', graphqlHTTP({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
     graphiql: true,
-    customFormatErrorFn(err) {
+    customFormatErrorFn(err) {  //function to throw custom error in graphQL
         if (!err.originalError) {
             return err;
         }
